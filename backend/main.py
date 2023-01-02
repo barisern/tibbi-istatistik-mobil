@@ -8,6 +8,7 @@ import bcrypt
 import jwt
 from datetime import datetime, timedelta
 from functools import wraps
+import requests
 
 def token_required(f):
     @wraps(f)
@@ -160,6 +161,8 @@ def saveForm(current_user):
             respone.status_code = 200
             cursor.close()
             conn.close()
+            
+            requests.post("https://ntfy.sh/tibbi_stat", data=f"{current_user['username']} isimli hasta yeni bir baş ağrısı kaydı oluşturdu!\n\nBelirtilen Baş Ağrısı Şiddeti: {_siddet}/10".encode(encoding='utf-8'))
             return respone
         else:
             return showMessage("POST isteği gönderin ve parametrelerinin dolu olduğundan emin olun.")
